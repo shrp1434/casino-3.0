@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Email Verification</title>
+</head>
+<body>
+  <h2>🎰 Email Verification 🎰</h2>
+  <div id="verifyMessage">Verifying your email...</div>
+
+  <script>
+    const API_URL = 'http://localhost:3000/api';
+
+    async function verifyEmail() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get('token');
+
+        if (!token) {
+            document.getElementById('verifyMessage').innerHTML = 
+                'Invalid verification link.';
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/auth/verify/${token}`);
+            const data = await response.json();
+
+            if (response.ok) {
+                document.getElementById('verifyMessage').innerHTML = 
+                    `${data.message} Redirecting to login...`;
+                setTimeout(() => {
+                    window.location.href = '/index.html';
+                }, 3000);
+            } else {
+                document.getElementById('verifyMessage').innerHTML = 
+                    `${data.error}`;
+            }
+        } catch (error) {
+            document.getElementById('verifyMessage').innerHTML = 
+                'Verification failed. Please try again.';
+        }
+    }
+
+    verifyEmail();
+  </script>
+</body>
+</html>
